@@ -38,4 +38,123 @@ export const getDashboardSummary = async (req, res) => {
   }
 };
 
+export const getJobStats = async (req, res) => {
+  try {
+    const jobs = await Job.findAll({
+      attributes: ["id", "title"],
+    });
 
+    const jobStats = await Promise.all(
+      jobs.map(async (job) => {
+        const totalApplicants = await Application.count({
+          where: {
+            jobId: job.id,
+          },
+        });
+
+        const applied = await Application.count({
+          where: {
+            jobId: job.id,
+            status: "Applied",
+          },
+        });
+
+        const shortlisted = await Application.count({
+          where: {
+            jobId: job.id,
+            status: "Shortlisted",
+          },
+        });
+
+        const interview = await Application.count({
+          where: {
+            jobId: job.id,
+            status: "Interview",
+          },
+        });
+
+        const selected = await Application.count({
+          where: {
+            jobId: job.id,
+            status: "Selected",
+          },
+        });
+
+        const rejected = await Application.count({
+          where: {
+            jobId: job.id,
+            status: "Rejected",
+          },
+        });
+
+        return {
+          jobTitle: job.title,
+          totalApplicants,
+          applied,
+          shortlisted,
+          interview,
+          selected,
+          rejected,
+        };
+      })
+    );
+
+    res.json({
+      jobStats,
+    });
+  } catch (error) {
+    console.error("Job stats error:", error);
+
+    res.status(500).json({
+      message: "Failed to fetch job statistics",
+    });
+  }
+};
+
+export const getApplicationStats = async (req, res) => {
+  try {
+    const applied = await Application.count({
+      where: {
+        status: "Applied",
+      },
+    });
+
+    const shortlisted = await Application.count({
+      where: {
+        status: "Shortlisted",
+      },
+    });
+
+    const interview = await Application.count({
+      where: {
+        status: "Interview",
+      },
+    });
+
+    const selected = await Application.count({
+      where: {
+        status: "Selected",
+      },
+    });
+
+    const rejected = await Application.count({
+      where: {
+        status: "Rejected",
+      },
+    });
+
+    res.json({
+      applied,
+      shortlisted,
+      interview,
+      selected,
+      rejected,
+    });
+  } catch (error) {
+    console.error("Application stats error:", error);
+
+    res.status(500).json({
+      message: "Failed to fetch application statistics",
+    });
+  }
+};
