@@ -319,3 +319,81 @@ Return ONLY valid JSON:
     });
   }
 };
+
+export const getInterviewResult = async (req, res) => {
+  try {
+    const { jobId, interviewData } = req.body;
+
+    if (!jobId || !interviewData || !Array.isArray(interviewData)) {
+      return res.status(400).json({
+        message: "jobId and interviewData are required",
+      });
+    }
+
+    const job = await Job.findByPk(jobId);
+
+    if (!job) {
+      return res.status(404).json({
+        message: "Job not found",
+      });
+    }
+
+    const prompt = `
+You are an AI interview evaluator.
+
+Evaluate the candidate's complete 5-question interview.
+
+JOB:
+Title: ${job.title}
+Required Skills: ${job.requiredSkills}
+Experience: ${job.experience}
+
+INTERVIEW:
+${JSON.stringify(interviewData, null, 2)}
+
+Analyze the candidate's overall performance.
+
+Return ONLY valid JSON in exactly this format:
+
+{
+  "overallScore": 0,
+  "technicalKnowledge": 0,
+  "communication": 0,
+  "problemSolving": 0,
+  "strengths": [],
+  "improvements": [],
+  "finalFeedback": "",
+  "recommendation": ""
+}
+
+Rules:
+- All scores must be between 0 and 100.
+- overallScore should reflect the complete interview.
+- technicalKnowledge evaluates technical correctness.
+- communication evaluates clarity and explanation.
+- problemSolving evaluates reasoning and approach.
+- strengths should contain the candidate's strongest areas.
+- improvements should contain specific areas to work on.
+- finalFeedback should summarize the interview.
+- recommendation should be one of:
+  "Strong Candidate",
+  "Potential Candidate",
+  "Needs Improvement"
+`;
+
+    const responseText = await generateAIResponse(prompt);
+
+    const result = JSON.parse(responseText);
+
+    res.json({
+      message: "Interview completed successfully",
+      result,
+    });
+  } catch (error) {
+    console.error("Interview result error:", error);
+
+    res.status(500).json({
+      message: "Failed to generate interview result",
+    });
+  }
+};
