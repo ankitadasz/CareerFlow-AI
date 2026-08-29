@@ -228,10 +228,15 @@ export const updateApplicationStatus = async(req,res)=>{
     });
     res.json({
       message:"Application status updated successfully",
-      application
+      application,
     })
     
   } catch (error) {
+     console.error("Update application status error:", error);
+
+    res.status(500).json({
+      message: "Failed to update application status",
+    });
     
   }
 }
