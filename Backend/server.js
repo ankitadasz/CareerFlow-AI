@@ -9,7 +9,8 @@ import jobRoutes from "./routes/jobRoutes.js";
 import applicationRoutes from "./routes/applicationRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
 import adminApplicationRoutes from "./routes/adminApplicationRoutes.js";
-import adminDashboardRoutes from "./routes/adminDashboardRoutes.js"
+import adminDashboardRoutes from "./routes/adminDashboardRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
 const app = express();
 
 app.use(cors());
@@ -27,6 +28,7 @@ app.use("/api/applications",applicationRoutes);
 app.use("/api/resumes", resumeRoutes);
 app.use("/api/admin/applications",adminApplicationRoutes);
 app.use("/api/admin/dashboard",adminDashboardRoutes);
+app.use("/api/ai", aiRoutes);
 
 const PORT = 5000;
 
