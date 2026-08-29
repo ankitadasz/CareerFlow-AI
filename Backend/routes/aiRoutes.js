@@ -1,12 +1,14 @@
 import express from "express";
-
+import { analyzeResume } from "../controllers/aiController.js";
 import {
-  analyzeResume,
   startInterview,
   submitInterviewAnswer,
   getNextInterviewQuestion,
   getInterviewResult,
-} from "../controllers/aiController.js";import { authMiddleware } from "../middleware/authMiddleware.js";
+   getMyInterviews,
+  getInterviewById,
+} from "../controllers/interviewController.js";
+import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
@@ -34,5 +36,16 @@ router.post(
   "/interview/result",
   authMiddleware,
   getInterviewResult
+);
+router.get(
+  "/interviews",
+  authMiddleware,
+  getMyInterviews
+);
+
+router.get(
+  "/interviews/:id",
+  authMiddleware,
+  getInterviewById
 );
 export default router;

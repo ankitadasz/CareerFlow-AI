@@ -3,6 +3,7 @@ import Job from "./Job.js";
 import Resume from "./Resume.js";
 import Application from "./Application.js";
 import Interview from "./Interview.js";
+import InterviewQuestion from "./InterviewQuestion.js";
 
 // User → Resume
 User.hasMany(Resume, {
@@ -62,6 +63,15 @@ Job.hasMany(Interview, {
 Interview.belongsTo(Job, {
   foreignKey: "jobId",
 });
+// Interview → InterviewQuestion
+Interview.hasMany(InterviewQuestion, {
+  foreignKey: "interviewId",
+  onDelete: "CASCADE",
+});
+
+InterviewQuestion.belongsTo(Interview, {
+  foreignKey: "interviewId",
+});
 
 export {
   User,
@@ -69,4 +79,5 @@ export {
   Resume,
   Application,
   Interview,
+  InterviewQuestion
 };
