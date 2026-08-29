@@ -6,7 +6,7 @@ import { adminMiddleware } from "../middleware/adminMiddleware.js";
 const router = express.Router();
 router.get("/", authMiddleware, adminMiddleware, getAllApplications);
 router.get("/:id", authMiddleware, adminMiddleware,getAdminApplicationById);
-router.patch("/:id", authMiddleware, adminMiddleware,updateApplicationStatus);
+router.patch("/:id/status", authMiddleware, adminMiddleware,updateApplicationStatus);
 
 
 
