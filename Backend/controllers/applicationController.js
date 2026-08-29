@@ -168,3 +168,70 @@ export const getAllApplications = async (req,res) =>{
     });
   }
 };
+export const getAdminApplicationById= async(req,res)=>{
+  try {
+    const {id} =req.params;
+    const application=await Application.findByPk(id,{
+      include:[
+        {
+          model:User,
+          attributes:["id","name","email"]
+        },
+        {
+          model:Job,
+        },
+        {
+          model:Resume,
+          attributes:["id","title","resumeText"],
+        },
+      ],
+    })
+    if(!application){
+      return res.status(404).json({
+        message:"Application not Found",
+      });
+    }
+    res.json({
+      application,
+    });
+  } catch (error) {
+    console.error("Get Admin Application Error:",error);
+    res.status(500).json({
+      message:"failed to fetch Application",
+    });
+  }
+};
+export const updateApplicationStatus = async(req,res)=>{
+  try {
+    const {id}=req.params;
+    const {status} = req.body;
+    const allowedStatus = [
+      "Applied",
+      "Shortlisted",
+      "Interview",
+      "Selected",
+      "Rejected",
+    ];
+    if(!allowedStatus.includes(status)){
+      return res.status(400).json({
+        message:"Invalid Application Status",
+      })
+    }
+    const application=await Application.findByPk(id);
+    if(!application){
+      return re.status(404).json({
+        message:"Apllication Not Found",
+      });
+    }
+    await application.update({
+      status,
+    });
+    res.json({
+      message:"Application status updated successfully",
+      application
+    })
+    
+  } catch (error) {
+    
+  }
+}
