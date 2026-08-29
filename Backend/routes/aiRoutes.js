@@ -1,6 +1,6 @@
 import express from "express";
 
-import { analyzeResume } from "../controllers/aiController.js";
+import { analyzeResume, startInterview,submitInterviewAnswer } from "../controllers/aiController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -10,5 +10,14 @@ router.post(
   authMiddleware,
   analyzeResume
 );
-
+router.post(
+  "/interview/start",
+  authMiddleware,
+  startInterview
+);
+router.post(
+  "/interview/answer",
+  authMiddleware,
+  submitInterviewAnswer
+);
 export default router;
